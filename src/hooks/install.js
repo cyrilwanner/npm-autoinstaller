@@ -11,7 +11,7 @@ const infoString = 'this file has been automatically generated, please do not ed
  *
  * @desc    check if an existing git hook is a previously installed
  *          npm-autoinstaller hook
- * @param   {string}  hook  - name of the git hook
+ * @param   {string} hook - name of the git hook
  * @return  {boolean}
  */
 const isAutoinstallerHook = (hook) => {
@@ -49,7 +49,7 @@ const hasAlreadyOtherHooks = () => {
  * replace hook in file
  *
  * @desc  replaces the {HOOK} placeholder in a hook file
- * @param {string}  hook  - name of the git hook
+ * @param {string} hook - name of the git hook
  */
 const replaceHookInFile = (hook) => {
   const filename = `${gitHooksPath}/${hook}`;

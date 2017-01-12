@@ -5,7 +5,7 @@ import { info, separator } from './log';
  * changed files to array
  *
  * @desc    converts the output of the diff commands to an array
- * @param   {string}  files - string with all files
+ * @param   {string} files - string with all files
  * @return  {array}
  */
 export const changedFilesToArray = (files) => {
@@ -21,7 +21,7 @@ export const changedFilesToArray = (files) => {
  * check for updates
  *
  * @desc    checks if a changed file should trigger an npm install
- * @param   {array} - files - all changed files
+ * @param   {array} files - all changed files
  */
 export const checkForUpdates = (files) => {
   const changedFiles = changedFilesToArray(files);
