@@ -1,6 +1,6 @@
 {
   "name": "npm-autoinstaller",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "automatically installs missing npm packages or updates them when you checkout another branch with git or perform a merge/rebase",
   "repository": "cyrilwanner/npm-autoinstaller",
   "scripts": {
