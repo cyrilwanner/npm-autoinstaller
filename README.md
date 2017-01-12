@@ -16,10 +16,35 @@ You'll never have to run `npm install` again!
 
   Currently supported git actions:
 
-    * pull
-    * merge
-    * checkout
-    * rewrite/rebase
+  * `pull`
+  * `merge`
+  * `checkout`
+  * `rewrite/rebase`
+
+## Configuration
+
+  You can of course configure how the script should handle package changes.
+  The configuration itself is also done in the package.json. You can add the following object to it (these are the default values):
+  ```json
+    "autoinstaller": {
+      "npm": {
+        "do": "install",
+        "fallback": "install",
+        "command": "npm install"
+      }
+    }
+  ```
+  With the `do` property, you specify what action should be executed if the packages have changed. The following actions are available:
+
+  * `install`: just installs the packages
+  * `ask`: if the packages have changed, the user gets prompted and can decide if he wants to install them
+  * `warn`: only a warning message will get displayed that the packages have changed but they don't get installed automatically
+  * `nothing` (or `false`): ignore updated packages
+
+  If you choose `ask`, you can specify a fallback action in the `fallback` property.
+  The fallback will get used if the user is not in an interactive shell (e.g. git pull was called from a script or a GUI like SourceTree is used).
+
+  With the `command` property, you can change the command which gets executed if a change has been detected.
 
 ## Migrating
 
