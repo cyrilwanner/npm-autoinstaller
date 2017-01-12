@@ -1,6 +1,6 @@
 import 'colors';
 
-const prefix = 'npm-autoinstaller:';
+export const prefix = 'npm-autoinstaller:';
 
 export const info = (str) => console.log(`${prefix.gray} ${str}`);
 export const warn = (str) => console.warn(`${prefix.yellow} ${str}`);
