@@ -1,0 +1,9 @@
+http://www.marcusoft.net/2015/08/pre-and-post-hooks-for-npm-scripting.html
+https://github.com/gtramontina/ghooks/blob/master/package.json
+https://docs.npmjs.com/getting-started/fixing-npm-permissions
+https://github.com/inxilpro/node-app-root-path/blob/master/LICENSE
+http://babeljs.io/docs/usage/polyfill/
+https://nodejs.org/api/process.html
+https://git-scm.com/docs/githooks
+https://git-scm.com/docs/git-diff
+https://github.com/nodejs/node-v0.x-archive/issues/9265

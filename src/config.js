@@ -9,7 +9,20 @@ const defaultConfig = {
   npm: {
     do: 'install',
     fallback: 'install',
-    command: 'npm install'
+    command: 'npm install',
+    files: ['package.json']
+  },
+  bower: {
+    do: 'install',
+    fallback: 'install',
+    command: 'bower install',
+    files: ['bower.json']
+  },
+  composer: {
+    do: 'install',
+    fallback: 'install',
+    command: 'composer install',
+    files: ['compoer.json', 'composer.lock']
   }
 };
 
@@ -20,7 +33,8 @@ const defaultConfig = {
  * @return  {object}
  */
 const loadConfig = () => {
-  return merge(defaultConfig, (loadFile('package.json') || {}).autoinstaller || {});
+  return merge(defaultConfig, (loadFile('package.json') || {}).autoinstaller || {},
+    {arrayMerge: (dest, source) => source});
 };
 
 /**

@@ -41,6 +41,7 @@ You'll never have to run `npm install` again!
   * `warn`: only a warning message will get displayed that the packages have changed but they don't get installed automatically
   * `nothing` (or `false`): ignore updated packages
 
+
   If you choose `ask`, you can specify a fallback action in the `fallback` property.
   The fallback will get used if the user is not in an interactive shell (e.g. git pull was called from a script or a GUI like SourceTree is used).
 
