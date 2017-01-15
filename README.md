@@ -30,8 +30,10 @@ You'll never have to run `npm install` again!
       "npm": {
         "do": "install",
         "fallback": "install",
-        "command": "npm install"
-      }
+        "command": "npm install",
+        "files": ["package.json"]
+      },
+      "bower": {...}
     }
   ```
   With the `do` property, you specify what action should be executed if the packages have changed. The following actions are available:
@@ -46,6 +48,22 @@ You'll never have to run `npm install` again!
   The fallback will get used if the user is not in an interactive shell (e.g. git pull was called from a script or a GUI like SourceTree is used).
 
   With the `command` property, you can change the command which gets executed if a change has been detected.
+
+  If you have a different setup or don't use the default package.json location or name, you can change the `files` property. It will automatically look for changes of all files in this array.
+
+## Other package managers (bower, yarn, ...)
+
+  npm-autoinstaller supports these package- or dependency managers out of the box: `npm`, `bower` and `composer`.
+  You can also change their config in the package.json accordingly to the npm example.
+
+  If you use `yarn`, `ied` or something similar, that's also not a problem. Just change the install command in the config like this:
+  ```json
+    "npm": {
+      "command": "yarn install"
+    }
+  ```
+
+  You can even add any other dependency manager by yourself. Just add a new entry in the config object, specify which files it should look for changes and which command it should execute for updating the dependencies.
 
 ## Migrating
 
