@@ -1,4 +1,4 @@
-npm-autoinstaller
+npm-autoinstaller [![npm version](https://badge.fury.io/js/npm-autoinstaller.svg)](https://www.npmjs.com/package/npm-autoinstaller)
 =========
 
 Ensures that you'll always be up to date with your dependencies.
