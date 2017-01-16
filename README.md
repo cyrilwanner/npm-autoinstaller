@@ -6,6 +6,16 @@ Useful if you are working on a team and your package.json changes a lot, e.g. wh
 
 You'll never have to run `npm install` again!
 
+## Table of contents
+
+* [Installation](#installation)
+* [Usage](#usage)
+* [Configuration](#configuration)
+* [Other package managers (bower, yarn, ...)](#other-package-managers-bower-yarn-)
+* [Migrating](#migrating)
+* [Windows Support](#windows-support)
+* [Support](#support)
+
 ## Installation
 
 `npm install --save-dev npm-autoinstaller`
@@ -70,6 +80,14 @@ You can even add any other dependency manager by yourself. Just add a new entry 
 
 If you already use another package with git-hooks in your project, you may receive this message during installation: `it seems like you already have some git hooks installed.`.
 If this is the case, please read the [MIGRATING.md](https://github.com/cyrilwanner/npm-autoinstaller/blob/master/MIGRATING.md)
+
+## Windows support
+
+This package has only basic windows support. This means, if you are in a bash like environment (`git bash` or `Cygwin`) and you are using the git cli,
+it should work fine except the `ask` action because there is no way to tell if the shell is interactive or not. So it will always use the fallback action in this case.
+
+Also, GUIs (like SourceTree or GitHub for Windows) are supported, _if_ you installed node in the default location.
+Because these applications use a custom PATH when executing the git commands in the background, the npm-autoinstaller has to guess the path of the node executable.
 
 ## Support
 
