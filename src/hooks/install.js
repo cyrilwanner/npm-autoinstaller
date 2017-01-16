@@ -87,13 +87,6 @@ const copyHooks = () => {
  * @desc  installs all available git hooks
  */
 const installHooks = () => {
-  // windows is not supported for now
-  if (process.platform === 'win32') {
-    warn('npm-autoinstaller could not be installed:');
-    warn('your operating system is currently not supported');
-    return;
-  }
-
   fs.lstat(gitHooksPath, (err, stats) => {
     if (err || !stats.isDirectory()) {
       separator();
