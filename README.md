@@ -86,9 +86,9 @@ If this is the case, please read the [MIGRATING.md](https://github.com/cyrilwann
 This package has only basic windows support. This means, if you are in a bash like environment (`git bash` or `Cygwin`) and you are using the git cli,
 it should work fine except the `ask` action because there is no way to tell if the shell is interactive or not. So it will always use the fallback action in this case.
 
-Also, GUIs (like SourceTree or GitHub for Windows) are supported, _if_ you installed node in the default location.
-Because these applications use a custom PATH when executing the git commands in the background, the npm-autoinstaller has to guess the path of the node executable.
+Also, GUIs (like SourceTree or GitHub for Windows) are supported, _if_ you have installed node in the default location.
+Because these applications use a custom PATH when executing the git commands in the background, the npm-autoinstaller has to guess the location of the node executable.
 
 ## Support
 
-Something is not working or you have a question? Simply create a new issue!
+Something is not working or you have a question? Simply create a [new issue](https://github.com/cyrilwanner/npm-autoinstaller/issues/new)!
