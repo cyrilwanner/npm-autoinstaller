@@ -3,7 +3,7 @@ import merge from 'deepmerge';
 import { rootPath } from './paths';
 
 /**
- * Specifies the default config
+ * specifies the default config
  */
 const defaultConfig = {
   npm: {
@@ -23,18 +23,52 @@ const defaultConfig = {
     fallback: 'install',
     command: 'composer install',
     files: ['compoer.json', 'composer.lock']
-  }
+  },
+  userConfig: 'autoinstaller.json'
+};
+
+/**
+ * config for deep merging the default config with the user config
+ */
+const mergeConfig = {
+  arrayMerge: (dest, source) => source
 };
 
 /**
  * load config
  *
- * @desc    load the npm-autoinstaller config from the package.json file
+ * @desc    load the npm-autoinstaller config from the package.json file and custom user configs
  * @return  {object}
  */
 const loadConfig = () => {
-  return merge(defaultConfig, (loadFile('package.json') || {}).autoinstaller || {},
-    {arrayMerge: (dest, source) => source});
+  return loadUserConfig(defaultConfig, 'package.json', 'autoinstaller');
+};
+
+/**
+ * load user config
+ *
+ * @desc    load the config from the given file and merge it with the previous one
+ * @param   {object} currentConfig - current config
+ * @param   {file} file - filename of the user config
+ * @param   {string} topLevelProp - name of the property in which the config is stored inside the file (optional)
+ * @return  {object}
+ */
+const loadUserConfig = (currentConfig, file, topLevelProp = null) => {
+  const fileContent = loadFile(file);
+
+  // return current config if file does not exist
+  if (fileContent === null) {
+    return currentConfig;
+  }
+
+  const userConfig = topLevelProp === null ? fileContent : (fileContent[topLevelProp] || {});
+  const mergedConfig = merge(currentConfig, userConfig, mergeConfig);
+
+  if (mergedConfig.userConfig && mergedConfig.userConfig !== file) {
+    return loadUserConfig(mergedConfig, mergedConfig.userConfig);
+  }
+
+  return mergedConfig;
 };
 
 /**
