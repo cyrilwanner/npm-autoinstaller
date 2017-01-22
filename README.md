@@ -12,6 +12,7 @@ You'll never have to run `npm install` again!
 * [Usage](#usage)
 * [Configuration](#configuration)
 * [Other package managers (bower, yarn, ...)](#other-package-managers-bower-yarn-)
+* [User Configs](#user-configs)
 * [Migrating](#migrating)
 * [Windows Support](#windows-support)
 * [Support](#support)
@@ -62,6 +63,8 @@ With the `command` property, you can change the command which gets executed if a
 
 If you have a different setup or don't use the default package.json location or name, you can change the `files` property. It will automatically look for changes of all files in this array.
 
+You can also take a look at [User Configs](#user-configs) if you want to change a config just for yourself and not for all contributors.
+
 ## Other package managers (bower, yarn, ...)
 
 npm-autoinstaller supports these package- or dependency managers out of the box: `npm`, `bower` and `composer`.
@@ -75,6 +78,14 @@ If you use `yarn`, `ied` or something similar, that's also not a problem. Just c
 ```
 
 You can even add any other dependency manager by yourself. Just add a new entry in the config object, specify which files it should look for changes and which command it should execute for updating the dependencies.
+
+## User Configs
+
+You may not want to force all team members to use the same config of this package. For example, you use yarn for yourself but won't force everyone else to use it or you want just to be warned about package changes and not update them automatically like it is configured in the package.json.
+
+To solve this problem, you can use a user config file which you don't check in to your git repository and still suggest the default config for your team in the package.json. By default, npm-autoinstaller will also look for a `autoinstaller.json` file in the root directory of your project. If this exists, it will override the default config from the package.json. You may also want to add this file to your .gitignore and keep your overrides for yourself.
+
+If you don't want any configuration in the package.json at all, you can check in the `autoinstaller.json` file to git and specify a `userConfig` key within it (with a filename as the value, e.g. `autoinstaller.local.json`) to still allow user configs.
 
 ## Migrating
 
