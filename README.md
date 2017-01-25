@@ -42,7 +42,7 @@ The configuration itself is also done in the package.json. You can add the follo
   "npm": {
     "do": "install",
     "fallback": "install",
-    "command": "npm install",
+    "command": "npm prune && npm install",
     "files": ["package.json"]
   },
   "bower": {...}
