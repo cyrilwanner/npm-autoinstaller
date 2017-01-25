@@ -1,5 +1,4 @@
 import fs from 'fs';
-import fse from 'fs-extra';
 import { gitHooksPath, packagePath } from '../paths';
 import { warn, error, separator } from '../log';
 
@@ -34,7 +33,7 @@ const hasAlreadyOtherHooks = () => {
       fs.lstatSync(`${gitHooksPath}/${hook}`);
 
       if (isAutoinstallerHook(hook)) {
-        fse.removeSync(`${gitHooksPath}/${hook}`);
+        fs.unlinkSync(`${gitHooksPath}/${hook}`);
         continue;
       }
 
@@ -46,18 +45,16 @@ const hasAlreadyOtherHooks = () => {
 };
 
 /**
- * replace hook in file
+ * replace hook in string
  *
- * @desc  replaces the {HOOK} placeholder in a hook file
+ * @desc  replaces the {HOOK} placeholder in a string
+ * @param {string} content - string in which the hook should get replaced
  * @param {string} hook - name of the git hook
+ * @return {string}
  */
-const replaceHookInFile = (hook) => {
-  const filename = `${gitHooksPath}/${hook}`;
-  const file = fs.readFileSync(filename, 'utf8');
-  let replacedFile = file.replace(/\{HOOK\}/g, hook);
-  replacedFile = replacedFile.replace(/\{INFO\}/g, infoString);
-
-  fs.writeFileSync(filename, replacedFile, 'utf8');
+const replaceHookInString = (content, hook) => {
+  const replacedString = content.replace(/\{HOOK\}/g, hook);
+  return replacedString.replace(/\{INFO\}/g, infoString);
 };
 
 /**
@@ -68,8 +65,9 @@ const replaceHookInFile = (hook) => {
 const copyHooks = () => {
   for (let hook of hooks) {
     try {
-      fse.copySync(`${packagePath}/dist/hooks/hook-template.sh`, `${gitHooksPath}/${hook}`);
-      replaceHookInFile(hook);
+      const content = fs.readFileSync(`${packagePath}/dist/hooks/hook-template.sh`, 'utf8');
+      fs.writeFileSync(`${gitHooksPath}/${hook}`, replaceHookInString(content, hook));
+      fs.chmodSync(`${gitHooksPath}/${hook}`, '755');
     } catch (e) {
       separator();
       error('npm-autoinstaller could not be installed:');
