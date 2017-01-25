@@ -9,7 +9,7 @@ const defaultConfig = {
   npm: {
     do: 'install',
     fallback: 'install',
-    command: 'npm install',
+    command: 'npm prune && npm install',
     files: ['package.json']
   },
   bower: {
