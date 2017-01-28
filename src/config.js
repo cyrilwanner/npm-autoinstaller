@@ -5,7 +5,7 @@ import { rootPath } from './paths';
 /**
  * specifies the default config
  */
-export const defaultConfig = {
+const defaultConfig = {
   npm: {
     do: 'install',
     fallback: 'install',
@@ -51,9 +51,10 @@ export const loadConfig = () => {
  * @param   {object} currentConfig - current config
  * @param   {file} file - filename of the user config
  * @param   {string} topLevelProp - name of the property in which the config is stored inside the file (optional)
+ * @param   {boolean} recursive - if it should recursively load user configs (optional)
  * @return  {object}
  */
-export const loadUserConfig = (currentConfig, file, topLevelProp = null) => {
+export const loadUserConfig = (currentConfig, file, topLevelProp = null, recursive = true) => {
   const fileContent = loadFile(file);
 
   // return current config if file does not exist
@@ -64,7 +65,7 @@ export const loadUserConfig = (currentConfig, file, topLevelProp = null) => {
   const userConfig = topLevelProp === null ? fileContent : (fileContent[topLevelProp] || {});
   const mergedConfig = merge(currentConfig, userConfig, mergeConfig);
 
-  if (mergedConfig.userConfig && mergedConfig.userConfig !== file) {
+  if (mergedConfig.userConfig && mergedConfig.userConfig !== file && recursive) {
     return loadUserConfig(mergedConfig, mergedConfig.userConfig);
   }
 
