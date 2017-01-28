@@ -13,7 +13,7 @@ export class Manager {
     if (config[name] && typeof config[name].command !== 'undefined' && typeof config[name].files !== 'undefined') {
       this.loadFromConfig();
     } else {
-      throw new Exception('can not load manager from config');
+      throw new Error('can not load manager from config');
     }
   }
 
@@ -23,13 +23,17 @@ export class Manager {
    * @desc  load the configuration for the manager
    */
   loadFromConfig() {
-    this.action = config[this.name].do || 'install';
+    this.action = config[this.name].do;
     this.command = config[this.name].command;
-    this.files = Array.isArray(config[this.name].files) ? config[this.name].files : [config.this.name].files;
+    this.files = Array.isArray(config[this.name].files) ? config[this.name].files : [config[this.name].files];
 
     // use the fallback action if the shell is not interactive
     if (this.action === 'ask' && !process.stdout.isTTY) {
-      this.action = config[this.name].fallback || 'install';
+      this.action = config[this.name].fallback;
+    }
+
+    if (typeof this.action === 'undefined') {
+      this.action = 'install';
     }
   }
 
