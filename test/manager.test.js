@@ -10,74 +10,73 @@ let errorSpy;
 let execSpy;
 let askSpy;
 
-const packages = {
-  './config': {
-    config: {
-      valid: {
-        do: 'ask',
-        fallback: 'warn',
-        command: 'npm prune && npm install',
-        files: ['package.json']
-      },
-      install: {
-        do: 'install',
-        command: 'npm install',
-        files: ['package.json']
-      },
-      warn: {
-        do: 'warn',
-        command: 'npm install',
-        files: ['package.json']
-      },
-      ask: {
-        do: 'ask',
-        fallback: 'ask',
-        command: 'npm install',
-        files: ['packages.json']
-      },
-      filesArray: {
-        command: 'npm install',
-        files: 'package.json'
-      },
-      defaultAction: {
-        command: 'npm install',
-        files: ['package.json']
-      },
-      ttyDefaultAction: {
-        do: 'ask',
-        command: 'npm install',
-        files: ['package.json']
-      },
-      disabled1: {
-        do: false,
-        command: 'npm install',
-        files: ['package.json']
-      },
-      disabled2: {
-        do: 'disabled',
-        command: 'npm install',
-        files: ['package.json']
-      },
-      disabled3: {
-        do: null,
-        command: 'npm install',
-        files: ['package.json']
-      },
-      dependencyFile: {
-        command: 'npm install',
-        files: ['package.json', 'test/package2.json']
-      },
-      invalid1: {
-        command: 'npm install'
-      },
-      invalid2: {
-        files: ['package.json']
-      },
-      invalid3: {
-        do: 'ask'
-      }
-    }
+const config = {
+  valid: {
+    do: 'ask',
+    fallback: 'warn',
+    command: 'npm prune && npm install',
+    files: ['package.json']
   },
+  install: {
+    do: 'install',
+    command: 'npm install',
+    files: ['package.json']
+  },
+  warn: {
+    do: 'warn',
+    command: 'npm install',
+    files: ['package.json']
+  },
+  ask: {
+    do: 'ask',
+    fallback: 'ask',
+    command: 'npm install',
+    files: ['packages.json']
+  },
+  filesArray: {
+    command: 'npm install',
+    files: 'package.json'
+  },
+  defaultAction: {
+    command: 'npm install',
+    files: ['package.json']
+  },
+  ttyDefaultAction: {
+    do: 'ask',
+    command: 'npm install',
+    files: ['package.json']
+  },
+  disabled1: {
+    do: false,
+    command: 'npm install',
+    files: ['package.json']
+  },
+  disabled2: {
+    do: 'disabled',
+    command: 'npm install',
+    files: ['package.json']
+  },
+  disabled3: {
+    do: null,
+    command: 'npm install',
+    files: ['package.json']
+  },
+  dependencyFile: {
+    command: 'npm install',
+    files: ['package.json', 'test/package2.json']
+  },
+  invalid1: {
+    command: 'npm install'
+  },
+  invalid2: {
+    files: ['package.json']
+  },
+  invalid3: {
+    do: 'ask'
+  }
+};
+
+const packages = {
   './log': {
     info: (...args) => infoSpy(...args),
     warn: (...args) => warnSpy(...args),
@@ -102,7 +101,7 @@ describe('manager', () => {
   });
 
   it('creates a new manager with a valid config', () => {
-    const manager = new Manager('valid');
+    const manager = new Manager('valid', config.valid);
 
     expect(manager).to.be.an.instanceof(Manager);
     expect(manager.name).to.equal('valid');
@@ -111,21 +110,21 @@ describe('manager', () => {
   });
 
   it('does not accept invalid configs', () => {
-    expect(() => new Manager('invalid1')).to.throw('can not load manager from config');
-    expect(() => new Manager('invalid2')).to.throw('can not load manager from config');
-    expect(() => new Manager('invalid3')).to.throw('can not load manager from config');
-    expect(() => new Manager('invalid4')).to.throw('can not load manager from config');
+    expect(() => new Manager('invalid1', config.invalid1)).to.throw('can not load manager from config');
+    expect(() => new Manager('invalid2', config.invalid2)).to.throw('can not load manager from config');
+    expect(() => new Manager('invalid3', config.invalid3)).to.throw('can not load manager from config');
+    expect(() => new Manager('invalid4', config.invalid4)).to.throw('can not load manager from config');
   });
 
   it('converts files to an array', () => {
-    const manager = new Manager('filesArray');
+    const manager = new Manager('filesArray', config.filesArray);
 
     expect(manager).to.be.an.instanceof(Manager);
     expect(manager.files).to.deep.equal(['package.json']);
   });
 
   it('falls back to a default action', () => {
-    const manager = new Manager('defaultAction');
+    const manager = new Manager('defaultAction', config.defaultAction);
 
     expect(manager).to.be.an.instanceof(Manager);
     expect(manager.action).to.equal('install');
@@ -135,57 +134,57 @@ describe('manager', () => {
 
   it('uses the fallback action if the terminal does not support TTY', () => {
     process.stdout.isTTY = true;
-    const manager1 = new Manager('valid');
+    const manager1 = new Manager('valid', config.valid);
 
     expect(manager1).to.be.an.instanceof(Manager);
     expect(manager1.action).to.equal('ask');
 
     process.stdout.isTTY = false;
-    const manager2 = new Manager('valid');
+    const manager2 = new Manager('valid', config.valid);
 
     expect(manager2).to.be.an.instanceof(Manager);
     expect(manager2.action).to.equal('warn');
 
-    const manager3 = new Manager('ttyDefaultAction');
+    const manager3 = new Manager('ttyDefaultAction', config.ttyDefaultAction);
 
     expect(manager3).to.be.an.instanceof(Manager);
     expect(manager3.action).to.equal('install');
   });
 
   it('checks if the manager is disabled', () => {
-    const manager1 = new Manager('disabled1');
+    const manager1 = new Manager('disabled1', config.disabled1);
 
     expect(manager1).to.be.an.instanceof(Manager);
     expect(manager1.isDisabled()).to.equal(true);
 
-    const manager2 = new Manager('disabled2');
+    const manager2 = new Manager('disabled2', config.disabled2);
 
     expect(manager2).to.be.an.instanceof(Manager);
     expect(manager2.isDisabled()).to.equal(true);
 
-    const manager3 = new Manager('disabled3');
+    const manager3 = new Manager('disabled3', config.disabled3);
 
     expect(manager3).to.be.an.instanceof(Manager);
     expect(manager3.isDisabled()).to.equal(true);
 
-    const manager4 = new Manager('valid');
+    const manager4 = new Manager('valid', config.valid);
 
     expect(manager4).to.be.an.instanceof(Manager);
     expect(manager4.isDisabled()).to.equal(false);
 
-    const manager5 = new Manager('install');
+    const manager5 = new Manager('install', config.install);
 
     expect(manager5).to.be.an.instanceof(Manager);
     expect(manager5.isDisabled()).to.equal(false);
 
-    const manager6 = new Manager('warn');
+    const manager6 = new Manager('warn', config.warn);
 
     expect(manager6).to.be.an.instanceof(Manager);
     expect(manager6.isDisabled()).to.equal(false);
   });
 
   it('checks if a file is handled by this manager', () => {
-    const manager = new Manager('dependencyFile');
+    const manager = new Manager('dependencyFile', config.dependencyFile);
 
     expect(manager).to.be.an.instanceof(Manager);
     expect(manager.isDependencyFile('package.json')).to.equal(true);
@@ -197,7 +196,7 @@ describe('manager', () => {
   });
 
   it('handles the install action correctly', () => {
-    const manager = new Manager('install');
+    const manager = new Manager('install', config.install);
     manager.update();
 
     expect(infoSpy).to.have.been.called();
@@ -211,7 +210,7 @@ describe('manager', () => {
   });
 
   it('handles the warn action correctly', () => {
-    const manager = new Manager('warn');
+    const manager = new Manager('warn', config.warn);
     manager.update();
 
     expect(warnSpy).to.have.been.called();
@@ -226,7 +225,7 @@ describe('manager', () => {
   it('handles the ask action correctly', () => {
     askSpy = (...args) => true;
 
-    const manager1 = new Manager('ask');
+    const manager1 = new Manager('ask', config.ask);
     manager1.update();
 
     expect(infoSpy).to.have.been.called();
@@ -243,7 +242,7 @@ describe('manager', () => {
     execSpy = spy();
     askSpy = (...args) => false;
 
-    const manager2 = new Manager('ask');
+    const manager2 = new Manager('ask', config.ask);
     manager2.update();
 
     expect(infoSpy).to.have.been.called();
@@ -256,7 +255,7 @@ describe('manager', () => {
   });
 
   it('handles a disabled action correctly', () => {
-    const manager = new Manager('disabled1');
+    const manager = new Manager('disabled1', config.disabled1);
     manager.update();
 
     expect(infoSpy).to.not.have.been.called();
@@ -266,7 +265,7 @@ describe('manager', () => {
   });
 
   it('executes the correct command', () => {
-    const manager1 = new Manager('valid');
+    const manager1 = new Manager('valid', config.valid);
     manager1.executeCommand();
 
     expect(execSpy).to.have.been.called();
@@ -275,7 +274,7 @@ describe('manager', () => {
 
     execSpy = spy();
 
-    const manager2 = new Manager('install');
+    const manager2 = new Manager('install', config.install);
     manager2.executeCommand();
 
     expect(execSpy).to.have.been.called();
@@ -288,7 +287,7 @@ describe('manager', () => {
       throw new Error('custom-error');
     });
 
-    const manager1 = new Manager('valid');
+    const manager1 = new Manager('valid', config.valid);
     manager1.executeCommand();
 
     expect(execSpy).to.have.been.called();
@@ -303,7 +302,7 @@ describe('manager', () => {
     });
     errorSpy = spy();
 
-    const manager2 = new Manager('valid');
+    const manager2 = new Manager('valid', config.valid);
     manager2.executeCommand();
 
     expect(execSpy).to.have.been.called();
