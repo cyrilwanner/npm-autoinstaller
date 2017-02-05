@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { gitHooksPath, packagePath } from '../paths';
-import { warn, error, separator } from '../log';
+import { error, separator } from '../log';
 
 const hooks = ['post-checkout', 'post-merge', 'post-rewrite'];
 const infoString = 'this file has been automatically generated, please do not edit it';
@@ -13,11 +13,11 @@ const infoString = 'this file has been automatically generated, please do not ed
  * @param   {string} hook - name of the git hook
  * @return  {boolean}
  */
-const isAutoinstallerHook = (hook) => {
+export const isAutoinstallerHook = (hook) => {
   const data = fs.readFileSync(`${gitHooksPath}/${hook}`, 'utf8');
   const lines = data.split("\n");
 
-  return lines.length > 2 && lines[2] === '# npm-autoinstaller';
+  return lines.length > 2 && lines[2].startsWith('# npm-autoinstaller');
 };
 
 /**
@@ -27,18 +27,16 @@ const isAutoinstallerHook = (hook) => {
  *          from this package
  * @return  {boolean}
  */
-const hasAlreadyOtherHooks = () => {
+export const hasAlreadyOtherHooks = () => {
   for (let hook of hooks) {
-    try {
-      fs.lstatSync(`${gitHooksPath}/${hook}`);
-
+    if (fs.existsSync(`${gitHooksPath}/${hook}`)) {
       if (isAutoinstallerHook(hook)) {
         fs.unlinkSync(`${gitHooksPath}/${hook}`);
         continue;
       }
 
       return true;
-    } catch (e) {}
+    }
   }
 
   return false;
@@ -52,7 +50,7 @@ const hasAlreadyOtherHooks = () => {
  * @param {string} hook - name of the git hook
  * @return {string}
  */
-const replaceHookInString = (content, hook) => {
+export const replaceHookInString = (content, hook) => {
   const replacedString = content.replace(/\{HOOK\}/g, hook);
   return replacedString.replace(/\{INFO\}/g, infoString);
 };
@@ -62,7 +60,7 @@ const replaceHookInString = (content, hook) => {
  *
  * @desc  copyies the hook template over to the git hooks directory
  */
-const copyHooks = () => {
+export const copyHooks = () => {
   for (let hook of hooks) {
     try {
       const content = fs.readFileSync(`${packagePath}/dist/hooks/hook-template.sh`, 'utf8');
@@ -83,8 +81,9 @@ const copyHooks = () => {
  * install hooks
  *
  * @desc  installs all available git hooks
+ * @param {function} callback - optional callback function
  */
-const installHooks = () => {
+export const installHooks = (callback) => {
   fs.lstat(gitHooksPath, (err, stats) => {
     if (err || !stats.isDirectory()) {
       separator();
@@ -102,7 +101,9 @@ const installHooks = () => {
     } else {
       copyHooks();
     }
+
+    if (typeof callback === 'function') {
+      callback();
+    }
   });
 };
-
-module.exports = installHooks;

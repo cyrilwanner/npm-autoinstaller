@@ -8,7 +8,7 @@
     "build": "babel src --out-dir dist --copy-files",
     "install": "node ./install",
     "watch": "npm run build -- --watch",
-    "test": "npm run build && mocha --compilers js:babel-core/register"
+    "test": "npm run build && mocha --compilers js:babel-core/register --recursive"
   },
   "keywords": [
     "npm",

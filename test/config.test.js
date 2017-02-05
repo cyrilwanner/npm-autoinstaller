@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import { rootPath } from '../dist/paths';
 import mock from 'mock-fs';
 import { loadFile, loadUserConfig } from '../dist/config';
 
