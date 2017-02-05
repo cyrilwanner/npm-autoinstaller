@@ -3,6 +3,9 @@
   "version": "1.2.3",
   "description": "automatically installs missing npm packages or updates them when you checkout another branch with git or perform a merge/rebase",
   "repository": "cyrilwanner/npm-autoinstaller",
+  "engines": {
+    "node": ">= 4.0"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "babel src --out-dir dist --copy-files",
