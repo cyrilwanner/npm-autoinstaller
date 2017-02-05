@@ -1,5 +1,4 @@
 import { execSync } from 'child_process';
-import { config } from './config';
 import { askForInstall } from './input';
 import { info, warn, error } from './log';
 
@@ -7,13 +6,13 @@ import { info, warn, error } from './log';
  * package manager class
  */
 export class Manager {
-  constructor(name) {
+  constructor(name, config) {
     this.name = name;
 
-    if (config[name] && typeof config[name].command !== 'undefined' && typeof config[name].files !== 'undefined') {
-      this.loadFromConfig();
+    if (config && typeof config.command !== 'undefined' && typeof config.files !== 'undefined') {
+      this.loadFromConfig(config);
     } else {
-      throw new Exception('can not load manager from config');
+      throw new Error('can not load manager from config');
     }
   }
 
@@ -22,14 +21,18 @@ export class Manager {
    *
    * @desc  load the configuration for the manager
    */
-  loadFromConfig() {
-    this.action = config[this.name].do || 'install';
-    this.command = config[this.name].command;
-    this.files = Array.isArray(config[this.name].files) ? config[this.name].files : [config.this.name].files;
+  loadFromConfig(config) {
+    this.action = config.do;
+    this.command = config.command;
+    this.files = Array.isArray(config.files) ? config.files : [config.files];
 
     // use the fallback action if the shell is not interactive
     if (this.action === 'ask' && !process.stdout.isTTY) {
-      this.action = config[this.name].fallback || 'install';
+      this.action = config.fallback;
+    }
+
+    if (typeof this.action === 'undefined') {
+      this.action = 'install';
     }
   }
 

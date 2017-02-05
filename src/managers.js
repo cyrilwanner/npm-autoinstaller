@@ -5,13 +5,14 @@ import { Manager } from './manager';
  * get all managers
  *
  * @desc  create manager instances for all defined ones
+ * @param {object} config - config for all managers
  */
-const getAllManagers = () => {
+export const getAllManagers = (managerConfig) => {
   const managers = [];
 
-  for (const manager of Object.keys(config)) {
+  for (const manager of Object.keys(managerConfig)) {
     try {
-      managers.push(new Manager(manager));
+      managers.push(new Manager(manager, managerConfig[manager]));
     } catch (e) {}
   }
 
@@ -29,4 +30,4 @@ export const getManager = (name) => {
   return allManagers.find((manager) => manager.name === name);
 };
 
-export const allManagers = getAllManagers();
+export const allManagers = getAllManagers(config);

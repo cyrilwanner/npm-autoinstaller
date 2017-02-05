@@ -9,4 +9,4 @@ try {
   execSync('npm run build');
 }
 
-require('./dist/hooks/install')();
+require('./dist/hooks/install').installHooks();

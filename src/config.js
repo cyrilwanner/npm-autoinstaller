@@ -40,7 +40,7 @@ const mergeConfig = {
  * @desc    load the npm-autoinstaller config from the package.json file and custom user configs
  * @return  {object}
  */
-const loadConfig = () => {
+export const loadConfig = () => {
   return loadUserConfig(defaultConfig, 'package.json', 'autoinstaller');
 };
 
@@ -51,9 +51,10 @@ const loadConfig = () => {
  * @param   {object} currentConfig - current config
  * @param   {file} file - filename of the user config
  * @param   {string} topLevelProp - name of the property in which the config is stored inside the file (optional)
+ * @param   {boolean} recursive - if it should recursively load user configs (optional)
  * @return  {object}
  */
-const loadUserConfig = (currentConfig, file, topLevelProp = null) => {
+export const loadUserConfig = (currentConfig, file, topLevelProp = null, recursive = true) => {
   const fileContent = loadFile(file);
 
   // return current config if file does not exist
@@ -64,7 +65,7 @@ const loadUserConfig = (currentConfig, file, topLevelProp = null) => {
   const userConfig = topLevelProp === null ? fileContent : (fileContent[topLevelProp] || {});
   const mergedConfig = merge(currentConfig, userConfig, mergeConfig);
 
-  if (mergedConfig.userConfig && mergedConfig.userConfig !== file) {
+  if (mergedConfig.userConfig && mergedConfig.userConfig !== file && recursive) {
     return loadUserConfig(mergedConfig, mergedConfig.userConfig);
   }
 
@@ -78,7 +79,7 @@ const loadUserConfig = (currentConfig, file, topLevelProp = null) => {
  * @param   {string} file - path to the file in the project root
  * @return  {object}
  */
-const loadFile = (file) => {
+export const loadFile = (file) => {
   const path = `${rootPath}/${file}`;
   if (!fs.existsSync(path)) {
     return null;
