@@ -1,6 +1,8 @@
 npm-autoinstaller [![npm version](https://badge.fury.io/js/npm-autoinstaller.svg)](https://www.npmjs.com/package/npm-autoinstaller) [![Build Status](https://travis-ci.org/cyrilwanner/npm-autoinstaller.svg?branch=master)](https://travis-ci.org/cyrilwanner/npm-autoinstaller)
 =========
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/cyrilwanner/npm-autoinstaller.svg)](https://greenkeeper.io/)
+
 Ensures that you'll always be up to date with your dependencies.
 Useful if you are working on a team and your package.json changes a lot, e.g. when using [greenkeeper.io](https://greenkeeper.io/).
 
