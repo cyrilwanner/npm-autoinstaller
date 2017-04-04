@@ -10,7 +10,7 @@ const defaultConfig = {
     do: 'install',
     fallback: 'install',
     command: 'npm prune && npm install',
-    files: ['package.json']
+    files: ['package.json', 'npm-shrinkwrap.json']
   },
   bower: {
     do: 'install',
