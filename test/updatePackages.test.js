@@ -1,5 +1,5 @@
 import chai, { expect, spy } from 'chai';
-import spies from 'chai-spies';
+import spies from 'chai-spies-next';
 import proxyquire from 'proxyquire';
 import { Manager } from '../dist/manager';
 
@@ -71,10 +71,10 @@ line2
     checkForUpdates(['package.json']);
 
     expect(updateSpy).to.have.been.called();
-    expect(updateSpy).to.have.been.called.once();
+    expect(updateSpy).to.have.been.called.once;
     expect(updateSpy).to.have.been.called.with('npm');
     expect(separatorSpy).to.have.been.called();
-    expect(separatorSpy).to.have.been.called.twice();
+    expect(separatorSpy).to.have.been.called.twice;
 
     updateSpy = spy();
     separatorSpy = spy();
@@ -82,10 +82,10 @@ line2
     checkForUpdates(['sub/file.txt']);
 
     expect(updateSpy).to.have.been.called();
-    expect(updateSpy).to.have.been.called.once();
+    expect(updateSpy).to.have.been.called.once;
     expect(updateSpy).to.have.been.called.with('test1');
     expect(separatorSpy).to.have.been.called();
-    expect(separatorSpy).to.have.been.called.twice();
+    expect(separatorSpy).to.have.been.called.twice;
 
     updateSpy = spy();
     separatorSpy = spy();
@@ -93,17 +93,17 @@ line2
     checkForUpdates(['afile.txt', 'test/2.jpg']);
 
     expect(updateSpy).to.have.been.called();
-    expect(updateSpy).to.have.been.called.once();
+    expect(updateSpy).to.have.been.called.once;
     expect(updateSpy).to.have.been.called.with('test2');
     expect(separatorSpy).to.have.been.called();
-    expect(separatorSpy).to.have.been.called.twice();
+    expect(separatorSpy).to.have.been.called.twice;
   });
 
   it('detects multiple manager updates', () => {
     checkForUpdates(['package.json', 'sub/file.txt']);
 
     expect(updateSpy).to.have.been.called();
-    expect(updateSpy).to.have.been.called.twice();
+    expect(updateSpy).to.have.been.called.twice;
     expect(updateSpy).to.have.been.called.with('npm');
     expect(updateSpy).to.have.been.called.with('test1');
     expect(separatorSpy).to.have.been.called();
@@ -115,7 +115,7 @@ line2
     checkForUpdates(['test/1', 'sub/file.txt', 'another.file']);
 
     expect(updateSpy).to.have.been.called();
-    expect(updateSpy).to.have.been.called.twice();
+    expect(updateSpy).to.have.been.called.twice;
     expect(updateSpy).to.have.been.called.with('test1');
     expect(updateSpy).to.have.been.called.with('test2');
     expect(separatorSpy).to.have.been.called();
@@ -139,10 +139,10 @@ line2
     checkForUpdates(['package.json', 'a', 'package.json']);
 
     expect(updateSpy).to.have.been.called();
-    expect(updateSpy).to.have.been.called.once();
+    expect(updateSpy).to.have.been.called.once;
     expect(updateSpy).to.have.been.called.with('npm');
     expect(separatorSpy).to.have.been.called();
-    expect(separatorSpy).to.have.been.called.twice();
+    expect(separatorSpy).to.have.been.called.twice;
 
     updateSpy = spy();
     separatorSpy = spy();
@@ -150,7 +150,7 @@ line2
     checkForUpdates(['package.json', 'a', 'package.json', 'file2.txt', 'sub/file.txt']);
 
     expect(updateSpy).to.have.been.called();
-    expect(updateSpy).to.have.been.called.twice();
+    expect(updateSpy).to.have.been.called.twice;
     expect(updateSpy).to.have.been.called.with('npm');
     expect(updateSpy).to.have.been.called.with('test1');
     expect(separatorSpy).to.have.been.called();

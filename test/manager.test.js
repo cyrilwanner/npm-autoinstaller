@@ -1,5 +1,5 @@
 import chai, { expect, spy } from 'chai';
-import spies from 'chai-spies';
+import spies from 'chai-spies-next';
 import proxyquire from 'proxyquire';
 
 chai.use(spies);
@@ -200,12 +200,12 @@ describe('manager', () => {
     manager.update();
 
     expect(infoSpy).to.have.been.called();
-    expect(infoSpy).to.have.been.called.once();
+    expect(infoSpy).to.have.been.called.once;
     expect(infoSpy).to.have.been.called.with('install packages have changed, installing the updated packages..');
     expect(warnSpy).to.not.have.been.called();
     expect(errorSpy).to.not.have.been.called();
     expect(execSpy).to.have.been.called();
-    expect(execSpy).to.have.been.called.once();
+    expect(execSpy).to.have.been.called.once;
     expect(execSpy).to.have.been.called.with('npm install');
   });
 
@@ -214,7 +214,7 @@ describe('manager', () => {
     manager.update();
 
     expect(warnSpy).to.have.been.called();
-    expect(warnSpy).to.have.been.called.twice();
+    expect(warnSpy).to.have.been.called.twice;
     expect(warnSpy).to.have.been.called.with('warn packages have changed but are not updated automatically');
     expect(warnSpy).to.have.been.called.with(`you may need to run 'npm install' manually if your app requires the new versions of the packages`);
     expect(infoSpy).to.not.have.been.called();
@@ -229,11 +229,11 @@ describe('manager', () => {
     manager1.update();
 
     expect(infoSpy).to.have.been.called();
-    expect(infoSpy).to.have.been.called.twice();
+    expect(infoSpy).to.have.been.called.twice;
     expect(infoSpy).to.have.been.called.with('ask packages have changed, do you want to install the new versions?');
     expect(infoSpy).to.have.been.called.with('installing updated packages..');
     expect(execSpy).to.have.been.called();
-    expect(execSpy).to.have.been.called.once();
+    expect(execSpy).to.have.been.called.once;
     expect(execSpy).to.have.been.called.with('npm install');
     expect(warnSpy).to.not.have.been.called();
     expect(errorSpy).to.not.have.been.called();
@@ -246,7 +246,7 @@ describe('manager', () => {
     manager2.update();
 
     expect(infoSpy).to.have.been.called();
-    expect(infoSpy).to.have.been.called.twice();
+    expect(infoSpy).to.have.been.called.twice;
     expect(infoSpy).to.have.been.called.with('ask packages have changed, do you want to install the new versions?');
     expect(infoSpy).to.have.been.called.with('updated packages won\'t get installed');
     expect(warnSpy).to.not.have.been.called();
@@ -269,7 +269,7 @@ describe('manager', () => {
     manager1.executeCommand();
 
     expect(execSpy).to.have.been.called();
-    expect(execSpy).to.have.been.called.once();
+    expect(execSpy).to.have.been.called.once;
     expect(execSpy).to.have.been.called.with('npm prune && npm install');
 
     execSpy = spy();
@@ -278,7 +278,7 @@ describe('manager', () => {
     manager2.executeCommand();
 
     expect(execSpy).to.have.been.called();
-    expect(execSpy).to.have.been.called.once();
+    expect(execSpy).to.have.been.called.once;
     expect(execSpy).to.have.been.called.with('npm install');
   });
 
@@ -291,10 +291,10 @@ describe('manager', () => {
     manager1.executeCommand();
 
     expect(execSpy).to.have.been.called();
-    expect(execSpy).to.have.been.called.once();
+    expect(execSpy).to.have.been.called.once;
     expect(execSpy).to.have.been.called.with('npm prune && npm install');
     expect(errorSpy).to.have.been.called();
-    expect(errorSpy).to.have.been.called.twice();
+    expect(errorSpy).to.have.been.called.twice;
     expect(errorSpy).to.have.been.called.with('packages could not be installed');
 
     execSpy = spy((...args) => {
@@ -306,10 +306,10 @@ describe('manager', () => {
     manager2.executeCommand();
 
     expect(execSpy).to.have.been.called();
-    expect(execSpy).to.have.been.called.once();
+    expect(execSpy).to.have.been.called.once;
     expect(execSpy).to.have.been.called.with('npm prune && npm install');
     expect(errorSpy).to.have.been.called();
-    expect(errorSpy).to.have.been.called.twice();
+    expect(errorSpy).to.have.been.called.twice;
     expect(errorSpy).to.have.been.called.with(`the command 'npm' could not be found`);
     expect(errorSpy).to.have.been.called.with('please install it globally or update the install command in the npm-autoinstaller config');
   });
