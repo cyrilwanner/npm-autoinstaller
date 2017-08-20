@@ -1,5 +1,5 @@
 import chai, { expect, spy } from 'chai';
-import spies from 'chai-spies';
+import spies from 'chai-spies-next';
 import mock from 'mock-fs';
 import fs from 'fs';
 import proxyquire from 'proxyquire';
@@ -139,7 +139,7 @@ describe('hooks:install', () => {
     copyHooks();
 
     expect(separatorSpy).to.have.been.called();
-    expect(separatorSpy).to.have.been.called.twice();
+    expect(separatorSpy).to.have.been.called.twice;
     expect(errorSpy).to.have.been.called();
     expect(errorSpy).to.have.been.called.exactly(3);
     expect(errorSpy).to.have.been.called.with('npm-autoinstaller could not be installed:');
@@ -151,7 +151,7 @@ describe('hooks:install', () => {
 
     installHooks(() => {
       expect(separatorSpy).to.have.been.called();
-      expect(separatorSpy).to.have.been.called.twice();
+      expect(separatorSpy).to.have.been.called.twice;
       expect(errorSpy).to.have.been.called();
       expect(errorSpy).to.have.been.called.exactly(3);
       expect(errorSpy).to.have.been.called.with('npm-autoinstaller could not be installed:');
@@ -171,7 +171,7 @@ describe('hooks:install', () => {
 
     installHooks(() => {
       expect(separatorSpy).to.have.been.called();
-      expect(separatorSpy).to.have.been.called.twice();
+      expect(separatorSpy).to.have.been.called.twice;
       expect(errorSpy).to.have.been.called();
       expect(errorSpy).to.have.been.called.exactly(4);
       expect(errorSpy).to.have.been.called.with('npm-autoinstaller could not be installed:');
