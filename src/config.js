@@ -10,19 +10,22 @@ const defaultConfig = {
     do: 'install',
     fallback: 'install',
     command: 'npm prune && npm install',
-    files: ['package.json', 'npm-shrinkwrap.json']
+    files: ['package.json', 'npm-shrinkwrap.json'],
+    excludedFolders: ['node_modules']
   },
   bower: {
     do: 'install',
     fallback: 'install',
     command: 'bower install',
-    files: ['bower.json']
+    files: ['bower.json'],
+    excludedFolders: ['bower_components']
   },
   composer: {
     do: 'install',
     fallback: 'install',
     command: 'composer install',
-    files: ['compoer.json', 'composer.lock']
+    files: ['composer.json', 'composer.lock'],
+    excludedFolders: ['vendor']
   },
   userConfig: 'autoinstaller.json'
 };

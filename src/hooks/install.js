@@ -1,9 +1,11 @@
 import fs from 'fs';
-import { gitHooksPath, packagePath } from '../paths';
+import path from 'path';
+import { findGitHooksPath, packagePath } from '../paths';
 import { error, separator } from '../log';
 
 const hooks = ['post-checkout', 'post-merge', 'post-rewrite'];
 const infoString = 'this file has been automatically generated, please do not edit it';
+const gitHooksPath = findGitHooksPath();
 
 /**
  * is autoinstaller hook
@@ -50,9 +52,11 @@ export const hasAlreadyOtherHooks = () => {
  * @param {string} hook - name of the git hook
  * @return {string}
  */
-export const replaceHookInString = (content, hook) => {
-  const replacedString = content.replace(/\{HOOK\}/g, hook);
-  return replacedString.replace(/\{INFO\}/g, infoString);
+export const replaceHookInString = (content, hook, relativePath) => {
+  let replacedString = content.replace(/\{HOOK\}/g, hook);
+  replacedString = replacedString.replace(/\{INFO\}/g, infoString);
+  replacedString = replacedString.replace(/\{PATH}/g, relativePath);
+  return replacedString;
 };
 
 /**
@@ -63,8 +67,9 @@ export const replaceHookInString = (content, hook) => {
 export const copyHooks = () => {
   for (let hook of hooks) {
     try {
+      const relativePath = path.relative(gitHooksPath, __dirname);
       const content = fs.readFileSync(`${packagePath}/dist/hooks/hook-template.sh`, 'utf8');
-      fs.writeFileSync(`${gitHooksPath}/${hook}`, replaceHookInString(content, hook));
+      fs.writeFileSync(`${gitHooksPath}/${hook}`, replaceHookInString(content, hook, relativePath));
       fs.chmodSync(`${gitHooksPath}/${hook}`, '755');
     } catch (e) {
       separator();
@@ -84,26 +89,34 @@ export const copyHooks = () => {
  * @param {function} callback - optional callback function
  */
 export const installHooks = (callback) => {
-  fs.lstat(gitHooksPath, (err, stats) => {
-    if (err || !stats.isDirectory()) {
-      separator();
-      error('npm-autoinstaller could not be installed:');
-      error('git hooks directory not found!');
-      error('this directory is most likely not a git repository.');
-      separator();
-    } else if (hasAlreadyOtherHooks()) {
-      separator();
-      error('npm-autoinstaller could not be installed:');
-      error('it seems like you already have some git hooks installed.');
-      error('if you are using (or have used) another git-hooks package, please read:');
-      error('https://github.com/cyrilwanner/npm-autoinstaller/blob/master/MIGRATING.md'.underline);
-      separator();
-    } else {
-      copyHooks();
-    }
+  if (!gitHooksPath) {
+    separator();
+    error('npm-autoinstaller could not be installed:');
+    error('git hooks directory not found!');
+    error('this directory is most likely not a git repository.');
+    separator();
+  } else {
+    fs.lstat(gitHooksPath, (err, stats) => {
+      if (err || !stats.isDirectory()) {
+        separator();
+        error('npm-autoinstaller could not be installed:');
+        error('git hooks directory not found!');
+        error('this directory is most likely not a git repository.');
+        separator();
+      } else if (hasAlreadyOtherHooks()) {
+        separator();
+        error('npm-autoinstaller could not be installed:');
+        error('it seems like you already have some git hooks installed.');
+        error('if you are using (or have used) another git-hooks package, please read:');
+        error('https://github.com/cyrilwanner/npm-autoinstaller/blob/master/MIGRATING.md'.underline);
+        separator();
+      } else {
+        copyHooks();
+      }
 
-    if (typeof callback === 'function') {
-      callback();
-    }
-  });
+      if (typeof callback === 'function') {
+        callback();
+      }
+    });
+  }
 };
