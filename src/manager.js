@@ -2,9 +2,7 @@ import { execSync } from 'child_process';
 import path from 'path';
 import { askForInstall } from './input';
 import { info, warn, error } from './log';
-import { findGitHooksPath } from './paths';
-
-const gitHooksPath = findGitHooksPath();
+import { getGitHooksPath } from './paths';
 
 /**
  * package manager class
@@ -63,7 +61,7 @@ export class Manager {
         return file === managerFile.substr(1);
       }
 
-      return file.endsWith(managerFile) && !this.excludedFolders.some((folder) => {
+      return `/${file.replace(/\\/g, '/')}`.endsWith(`/${managerFile}`) && !this.excludedFolders.some((folder) => {
         return !!(file.match(new RegExp(`(^|\/|\)${folder}\/`)));
       });
     });
@@ -119,7 +117,7 @@ export class Manager {
   executeCommand(context) {
     try {
       execSync(this.command, {
-        cwd: path.normalize(`${gitHooksPath}/../../${context}`),
+        cwd: path.normalize(`${getGitHooksPath()}/../../${context}`),
         stdio: 'inherit'
       });
     } catch(e) {

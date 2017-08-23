@@ -3,6 +3,7 @@ import spies from 'chai-spies-next';
 import mock from 'mock-fs';
 import fs from 'fs';
 import proxyquire from 'proxyquire';
+import { resetGitHooksPath } from '../../dist/paths';
 
 chai.use(spies);
 
@@ -27,6 +28,14 @@ const {
 } = proxyquire('../../dist/hooks/install', packages);
 
 describe('hooks:install', () => {
+  before(() => {
+    resetGitHooksPath();
+  });
+
+  after(() => {
+    resetGitHooksPath();
+  });
+
   beforeEach(() => {
     errorSpy = spy();
     separatorSpy = spy();

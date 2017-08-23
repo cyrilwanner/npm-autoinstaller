@@ -190,7 +190,7 @@ describe('manager', () => {
     expect(manager.isDependencyFile('package.json')).to.equal(true);
     expect(manager.isDependencyFile('package.js')).to.equal(false);
     expect(manager.isDependencyFile('test')).to.equal(false);
-    expect(manager.isDependencyFile('test/package.json')).to.equal(false);
+    expect(manager.isDependencyFile('test/package.json')).to.equal(true);
     expect(manager.isDependencyFile('package2.json')).to.equal(false);
     expect(manager.isDependencyFile('test/package2.json')).to.equal(true);
   });

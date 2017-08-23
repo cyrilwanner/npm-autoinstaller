@@ -1,11 +1,10 @@
 import fs from 'fs';
 import path from 'path';
-import { findGitHooksPath, packagePath } from '../paths';
+import { getGitHooksPath, packagePath } from '../paths';
 import { error, separator } from '../log';
 
 const hooks = ['post-checkout', 'post-merge', 'post-rewrite'];
 const infoString = 'this file has been automatically generated, please do not edit it';
-const gitHooksPath = findGitHooksPath();
 
 /**
  * is autoinstaller hook
@@ -16,7 +15,7 @@ const gitHooksPath = findGitHooksPath();
  * @return  {boolean}
  */
 export const isAutoinstallerHook = (hook) => {
-  const data = fs.readFileSync(`${gitHooksPath}/${hook}`, 'utf8');
+  const data = fs.readFileSync(`${getGitHooksPath()}/${hook}`, 'utf8');
   const lines = data.split("\n");
 
   return lines.length > 2 && lines[2].startsWith('# npm-autoinstaller');
@@ -31,9 +30,9 @@ export const isAutoinstallerHook = (hook) => {
  */
 export const hasAlreadyOtherHooks = () => {
   for (let hook of hooks) {
-    if (fs.existsSync(`${gitHooksPath}/${hook}`)) {
+    if (fs.existsSync(`${getGitHooksPath()}/${hook}`)) {
       if (isAutoinstallerHook(hook)) {
-        fs.unlinkSync(`${gitHooksPath}/${hook}`);
+        fs.unlinkSync(`${getGitHooksPath()}/${hook}`);
         continue;
       }
 
@@ -67,10 +66,10 @@ export const replaceHookInString = (content, hook, relativePath) => {
 export const copyHooks = () => {
   for (let hook of hooks) {
     try {
-      const relativePath = path.relative(gitHooksPath, __dirname);
+      const relativePath = path.relative(getGitHooksPath(), __dirname);
       const content = fs.readFileSync(`${packagePath}/dist/hooks/hook-template.sh`, 'utf8');
-      fs.writeFileSync(`${gitHooksPath}/${hook}`, replaceHookInString(content, hook, relativePath));
-      fs.chmodSync(`${gitHooksPath}/${hook}`, '755');
+      fs.writeFileSync(`${getGitHooksPath()}/${hook}`, replaceHookInString(content, hook, relativePath));
+      fs.chmodSync(`${getGitHooksPath()}/${hook}`, '755');
     } catch (e) {
       separator();
       error('npm-autoinstaller could not be installed:');
@@ -89,14 +88,14 @@ export const copyHooks = () => {
  * @param {function} callback - optional callback function
  */
 export const installHooks = (callback) => {
-  if (!gitHooksPath) {
+  if (!getGitHooksPath()) {
     separator();
     error('npm-autoinstaller could not be installed:');
     error('git hooks directory not found!');
     error('this directory is most likely not a git repository.');
     separator();
   } else {
-    fs.lstat(gitHooksPath, (err, stats) => {
+    fs.lstat(getGitHooksPath(), (err, stats) => {
       if (err || !stats.isDirectory()) {
         separator();
         error('npm-autoinstaller could not be installed:');
