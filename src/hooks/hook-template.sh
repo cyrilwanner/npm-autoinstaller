@@ -70,4 +70,4 @@ if ! isNodeExecAvailable; then
   fi
 fi
 
-$NODE_EXEC "$DIR/../../node_modules/npm-autoinstaller/dist/hooks/{HOOK}" "$@"
+$NODE_EXEC "$DIR/{PATH}/{HOOK}" "$@"
