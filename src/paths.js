@@ -35,6 +35,8 @@ export const getGitHooksPath = () => {
     prevPath = nextPath;
     maxIterations--;
   } while (maxIterations >= 0);
+
+  return null;
 };
 
 /**

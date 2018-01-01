@@ -1,3 +1,4 @@
+import path from 'path';
 import chai, { expect, spy } from 'chai';
 import spies from 'chai-spies-next';
 import proxyquire from 'proxyquire';
@@ -15,12 +16,12 @@ const config = {
     do: 'ask',
     fallback: 'warn',
     command: 'npm prune && npm install',
-    files: ['package.json']
+    files: ['package.json'],
   },
   install: {
     do: 'install',
     command: 'npm install',
-    files: ['package.json']
+    files: ['package.json'],
   },
   warn: {
     do: 'warn',
@@ -31,49 +32,79 @@ const config = {
     do: 'ask',
     fallback: 'ask',
     command: 'npm install',
-    files: ['packages.json']
+    files: ['packages.json'],
   },
   filesArray: {
     command: 'npm install',
-    files: 'package.json'
+    files: 'package.json',
   },
   defaultAction: {
     command: 'npm install',
-    files: ['package.json']
+    files: ['package.json'],
   },
   ttyDefaultAction: {
     do: 'ask',
     command: 'npm install',
-    files: ['package.json']
+    files: ['package.json'],
   },
   disabled1: {
     do: false,
     command: 'npm install',
-    files: ['package.json']
+    files: ['package.json'],
   },
   disabled2: {
     do: 'disabled',
     command: 'npm install',
-    files: ['package.json']
+    files: ['package.json'],
   },
   disabled3: {
     do: null,
     command: 'npm install',
-    files: ['package.json']
+    files: ['package.json'],
   },
   dependencyFile: {
     command: 'npm install',
-    files: ['package.json', 'test/package2.json']
+    files: ['package.json', 'test/package2.json'],
   },
   invalid1: {
-    command: 'npm install'
+    command: 'npm install',
   },
   invalid2: {
-    files: ['package.json']
+    files: ['package.json'],
   },
   invalid3: {
-    do: 'ask'
-  }
+    do: 'ask',
+  },
+  excludedFolders1: {
+    command: 'npm prune && npm install',
+    files: ['package.json'],
+    excludedFolders: ['node_modules'],
+  },
+  excludedFolders2: {
+    command: 'npm prune && npm install',
+    files: ['package.json', 'package2.json'],
+    excludedFolders: ['node_modules', 'vendor'],
+  },
+  rootDir1: {
+    command: 'npm prune && npm install',
+    files: ['^package.json'],
+    excludedFolders: ['node_modules'],
+  },
+  rootDir2: {
+    command: 'npm prune && npm install',
+    files: ['^package.json', 'package2.json'],
+    excludedFolders: ['node_modules', 'vendor'],
+  },
+  multipleContextsInstall: {
+    do: 'install',
+    command: 'npm install',
+    files: ['package.json'],
+  },
+  multipleContextsWarn: {
+    do: 'warn',
+    command: 'npm install',
+    files: ['package.json'],
+  },
 };
 
 const packages = {
@@ -191,8 +222,10 @@ describe('manager', () => {
     expect(manager.isDependencyFile('package.js')).to.equal(false);
     expect(manager.isDependencyFile('test')).to.equal(false);
     expect(manager.isDependencyFile('test/package.json')).to.equal(true);
+    expect(manager.isDependencyFile('test\\package.json')).to.equal(true);
     expect(manager.isDependencyFile('package2.json')).to.equal(false);
     expect(manager.isDependencyFile('test/package2.json')).to.equal(true);
+    expect(manager.isDependencyFile('test\\package2.json')).to.equal(true);
   });
 
   it('handles the install action correctly', () => {
@@ -312,5 +345,124 @@ describe('manager', () => {
     expect(errorSpy).to.have.been.called.twice;
     expect(errorSpy).to.have.been.called.with(`the command 'npm' could not be found`);
     expect(errorSpy).to.have.been.called.with('please install it globally or update the install command in the npm-autoinstaller config');
+  });
+
+  it('handles excluded folders', () => {
+    const manager = new Manager('excludedFolders1', config.excludedFolders1);
+    
+    expect(manager).to.be.an.instanceof(Manager);
+    expect(manager.isDependencyFile('package.json')).to.equal(true);
+    expect(manager.isDependencyFile('subdir/package.json')).to.equal(true);
+    expect(manager.isDependencyFile('node_modules/package.json')).to.equal(false);
+    expect(manager.isDependencyFile('subdir/node_modules/package.json')).to.equal(false);
+    expect(manager.isDependencyFile('subdir/node_modules/test-package/package.json')).to.equal(false);
+    expect(manager.isDependencyFile('subdir/test-package/package.json')).to.equal(true);
+    expect(manager.isDependencyFile('subdir\\package.json')).to.equal(true);
+    expect(manager.isDependencyFile('node_modules\\package.json')).to.equal(false);
+    expect(manager.isDependencyFile('subdir\\node_modules\\package.json')).to.equal(false);
+    expect(manager.isDependencyFile('subdir\\node_modules\\test-package\\package.json')).to.equal(false);
+    expect(manager.isDependencyFile('subdir\\test-package\\package.json')).to.equal(true);
+  });
+  
+  it('handles multiple excluded folders', () => {
+    const manager = new Manager('excludedFolders2', config.excludedFolders2);
+    
+    expect(manager).to.be.an.instanceof(Manager);
+    expect(manager.isDependencyFile('package.json')).to.equal(true);
+    expect(manager.isDependencyFile('package2.json')).to.equal(true);
+    expect(manager.isDependencyFile('subdir/package.json')).to.equal(true);
+    expect(manager.isDependencyFile('subdir/package2.json')).to.equal(true);
+    expect(manager.isDependencyFile('node_modules/package.json')).to.equal(false);
+    expect(manager.isDependencyFile('node_modules/package2.json')).to.equal(false);
+    expect(manager.isDependencyFile('vendor/package.json')).to.equal(false);
+    expect(manager.isDependencyFile('vendor/package2.json')).to.equal(false);
+    expect(manager.isDependencyFile('node_modules/vendor/package.json')).to.equal(false);
+    expect(manager.isDependencyFile('node_modules/vendor/package2.json')).to.equal(false);
+    expect(manager.isDependencyFile('subdir/node_modules/package.json')).to.equal(false);
+    expect(manager.isDependencyFile('subdir/node_modules/package2.json')).to.equal(false);
+    expect(manager.isDependencyFile('subdir/vendor/package.json')).to.equal(false);
+    expect(manager.isDependencyFile('subdir/vendor/package2.json')).to.equal(false);
+  });
+
+  it('handles dependency files in the root directory', () => {
+    const manager = new Manager('rootDir1', config.rootDir1);
+    
+    expect(manager).to.be.an.instanceof(Manager);
+    expect(manager.isDependencyFile('package.json')).to.equal(true);
+    expect(manager.isDependencyFile('node_modules/package.json')).to.equal(false);
+    expect(manager.isDependencyFile('node_modules/test-package/package.json')).to.equal(false);
+    expect(manager.isDependencyFile('subdir/package.json')).to.equal(false);
+    expect(manager.isDependencyFile('subdir/node_modules/package.json')).to.equal(false);
+  });
+  
+  it('handles multiple dependency files in the root directory', () => {
+    const manager = new Manager('rootDir2', config.rootDir2);
+    
+    expect(manager).to.be.an.instanceof(Manager);
+    expect(manager.isDependencyFile('package.json')).to.equal(true);
+    expect(manager.isDependencyFile('package2.json')).to.equal(true);
+    expect(manager.isDependencyFile('node_modules/package.json')).to.equal(false);
+    expect(manager.isDependencyFile('node_modules/package2.json')).to.equal(false);
+    expect(manager.isDependencyFile('node_modules/test-package/package.json')).to.equal(false);
+    expect(manager.isDependencyFile('node_modules/test-package/package2.json')).to.equal(false);
+    expect(manager.isDependencyFile('subdir/package.json')).to.equal(false);
+    expect(manager.isDependencyFile('subdir/package2.json')).to.equal(true);
+    expect(manager.isDependencyFile('subdir/node_modules/package.json')).to.equal(false);
+    expect(manager.isDependencyFile('subdir/node_modules/package2.json')).to.equal(false);
+    expect(manager.isDependencyFile('vendor/package.json')).to.equal(false);
+    expect(manager.isDependencyFile('vendor/package2.json')).to.equal(false);
+    expect(manager.isDependencyFile('vendor/test-package/package.json')).to.equal(false);
+    expect(manager.isDependencyFile('vendor/test-package/package2.json')).to.equal(false);
+    expect(manager.isDependencyFile('subdir/vendor/package.json')).to.equal(false);
+    expect(manager.isDependencyFile('subdir/vendor/package2.json')).to.equal(false);
+  });
+  
+    it('handles multiple contexts with install', () => {
+      const manager = new Manager('multipleContextsInstall', config.multipleContextsInstall);
+      manager.update(['backend', 'frontend']);
+  
+      expect(infoSpy).to.have.been.called();
+      expect(infoSpy).to.have.been.called.twice;
+      expect(infoSpy).to.have.been.called.with('multipleContextsInstall packages have changed (in frontend/), installing the updated packages..');
+      expect(infoSpy).to.have.been.called.with('multipleContextsInstall packages have changed (in backend/), installing the updated packages..');
+      expect(warnSpy).to.not.have.been.called();
+      expect(errorSpy).to.not.have.been.called();
+      expect(execSpy).to.have.been.called();
+      expect(execSpy).to.have.been.called.twice;
+      expect(execSpy).to.have.been.called.with('npm install');
+    });
+
+  it('handles multiple contexts with warn', () => {
+    const manager = new Manager('multipleContextsWarn', config.multipleContextsWarn);
+    manager.update(['backend', 'frontend']);
+
+    expect(warnSpy).to.have.been.called();
+    expect(warnSpy).to.have.been.called.exactly(4);
+    expect(warnSpy).to.have.been.called.with('multipleContextsWarn packages have changed (in frontend/) but are not updated automatically');
+    expect(warnSpy).to.have.been.called.with('multipleContextsWarn packages have changed (in backend/) but are not updated automatically');
+    expect(warnSpy).to.have.been.called.with(`you may need to run 'npm install' manually if your app requires the new versions of the packages`);
+    expect(infoSpy).to.not.have.been.called();
+    expect(errorSpy).to.not.have.been.called();
+    expect(execSpy).to.not.have.been.called();
+  });
+  
+  it('executes a command in a subdirectory', () => {
+    const gitHooksPath = path.resolve(__dirname, '..', 'dist');
+
+    const manager1 = new Manager('valid', config.valid);
+    manager1.executeCommand('frontend');
+
+    expect(execSpy).to.have.been.called();
+    expect(execSpy).to.have.been.called.once;
+    expect(execSpy).to.have.been.called.with.exactly('npm prune && npm install', {cwd: gitHooksPath + '/frontend', stdio: 'inherit'});
+
+    execSpy = spy();
+
+    const manager2 = new Manager('install', config.install);
+    manager2.executeCommand();
+
+    expect(execSpy).to.have.been.called();
+    expect(execSpy).to.have.been.called.once;
+    expect(execSpy).to.have.been.called.with('npm install');
   });
 });

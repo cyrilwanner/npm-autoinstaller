@@ -62,7 +62,7 @@ export class Manager {
       }
 
       return `/${file.replace(/\\/g, '/')}`.endsWith(`/${managerFile}`) && !this.excludedFolders.some((folder) => {
-        return !!(file.match(new RegExp(`(^|\/|\)${folder}\/`)));
+        return !!(file.match(new RegExp(`(^|\/|\\\\)${folder}(\/|\\\\)`)));
       });
     });
   }
