@@ -16,6 +16,7 @@ You'll never have to run `npm install` again!
 * [Migrating](#migrating)
 * [Windows Support](#windows-support)
 * [Support](#support)
+* [License](#license)
 
 ## Installation
 
@@ -109,3 +110,8 @@ Because these applications use a custom PATH when executing the git commands in 
 ## Support
 
 Something is not working or you have a question? Simply create a [new issue](https://github.com/cyrilwanner/npm-autoinstaller/issues/new)!
+
+## License
+
+[MIT](https://github.com/cyrilwanner/npm-autoinstaller/blob/master/LICENSE) © Cyril Wanner
+
