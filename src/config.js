@@ -10,31 +10,31 @@ const defaultConfig = {
     do: 'install',
     fallback: 'install',
     command: 'npm prune && npm install',
-    files: ['package.json', 'npm-shrinkwrap.json'],
-    excludedFolders: ['node_modules']
+    files: ['package.json', 'package-lock.json', 'npm-shrinkwrap.json'],
+    excludedFolders: ['node_modules'],
   },
   bower: {
     do: 'install',
     fallback: 'install',
     command: 'bower install',
     files: ['bower.json'],
-    excludedFolders: ['bower_components']
+    excludedFolders: ['bower_components'],
   },
   composer: {
     do: 'install',
     fallback: 'install',
     command: 'composer install',
     files: ['composer.json', 'composer.lock'],
-    excludedFolders: ['vendor']
+    excludedFolders: ['vendor'],
   },
-  userConfig: 'autoinstaller.json'
+  userConfig: 'autoinstaller.json',
 };
 
 /**
  * config for deep merging the default config with the user config
  */
 const mergeConfig = {
-  arrayMerge: (dest, source) => source
+  arrayMerge: (dest, source) => source,
 };
 
 /**
