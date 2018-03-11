@@ -88,14 +88,16 @@ export const copyHooks = () => {
  * @param {function} callback - optional callback function
  */
 export const installHooks = (callback) => {
-  if (!getGitHooksPath()) {
+  const gitHooksPath = getGitHooksPath();
+
+  if (!gitHooksPath) {
     separator();
     error('npm-autoinstaller could not be installed:');
     error('git hooks directory not found!');
     error('this directory is most likely not a git repository.');
     separator();
   } else {
-    fs.lstat(getGitHooksPath(), (err, stats) => {
+    fs.lstat(gitHooksPath, (err, stats) => {
       if (err || !stats.isDirectory()) {
         separator();
         error('npm-autoinstaller could not be installed:');
