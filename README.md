@@ -23,7 +23,7 @@ You'll never have to run `npm install` again!
 
 ## Usage
 
-After installing, you are already set. The script installs the required [git-hooks](https://git-scm.com/book/it/v2/Customizing-Git-Git-Hooks) and runs automatically `npm install` once your package.json has been changed to ensure that you are always up to date with your dependencies!
+After installing, you are already set. The script installs the required [git-hooks](https://git-scm.com/book/it/v2/Customizing-Git-Git-Hooks) and runs automatically `npm install` once your package.json has changed to ensure that you are always up to date with your dependencies!
 
 Currently supported git actions:
 
@@ -35,7 +35,7 @@ Currently supported git actions:
 ## Configuration
 
 You can of course configure how the script should handle package changes.
-The configuration itself is also done in the package.json. You can add the following object to it (these are the default values):
+The configuration itself is also done in the package.json. You can add the following object to it (these are the [default values](https://github.com/cyrilwanner/npm-autoinstaller/blob/master/src/config.js#L8)):
 
 ```js
 "autoinstaller": {
@@ -43,7 +43,8 @@ The configuration itself is also done in the package.json. You can add the follo
     "do": "install",
     "fallback": "install",
     "command": "npm prune && npm install",
-    "files": ["package.json"]
+    "files": ["package.json"],
+    "excludedFolders": ["node_modules"]
   },
   "bower": {...}
 }
@@ -60,8 +61,13 @@ If you choose `ask`, you can specify a fallback action in the `fallback` propert
 The fallback will get used if the user is not in an interactive shell (e.g. git pull was called from a script or a GUI like SourceTree is used).
 
 With the `command` property, you can change the command which gets executed if a change has been detected.
+The command gets executed in the folder where the definition file (e.g. package.json) is located. So if you have `frontend/package.json`, it will change the current directory to `frontend` and execute the command there.
+Also, if you have a multi-package repository and have multiple package.json files, it will execute the command in all folders where the package.json got changed.
 
 If you have a different setup or don't use the default package.json location or name, you can change the `files` property. It will automatically look for changes of all files in this array.
+
+Note: The `files` property is recursive by default, so it will also check for a package.json in any subdirectory (except if it is in a folder specified in `excludedFolders`), which is useful if the frontend part is in a dedicated subfolder or you have a multi-package repository.
+If you don't want this, start your definitions with a `^` (e.g. `^package.json` or `^frontend/package.json`), this will only look for the file in the root folder of your project.
 
 You can also take a look at [User Configs](#user-configs) if you want to change a config just for yourself and not for all contributors.
 

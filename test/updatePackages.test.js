@@ -171,7 +171,7 @@ line2
   });
 
   it('does not update any manager if no such file got changed', () => {
-    checkForUpdates(['packagedjson', 'package/json', '/package.json', 'sub/package.json', 'test/2', 'test/2.gif', 'file2.txtt']);
+    checkForUpdates(['packagedjson', 'package/json', 'sub/spackage.json', 'test/2', 'test/2.gif', 'file2.txtt']);
 
     expect(updateSpy).to.not.have.been.called();
     expect(separatorSpy).to.not.have.been.called();
