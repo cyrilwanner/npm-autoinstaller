@@ -31,6 +31,14 @@ node node_modules/npm-autoinstaller/dist/hooks/post-checkout "$@"
 node node_modules/npm-autoinstaller/dist/hooks/post-merge "$@"
 node node_modules/npm-autoinstaller/dist/hooks/post-rewrite "$@"
 ```
+Note that if your script manager invokes additional scripts via the scripts in the .git/hooks folder, and you are adding the above commands to these scripts, you will need to pass hook parameters through to the script you are adding the above lines to. For example, the [husky](https://github.com/typicode/husky) hook manager configures its scripts in package.json, and provides the git hook parameters as `$GIT_PARAMS`:
+```
+{
+    "scripts": {
+        "postcheckout": "node ./hooks/post-checkout.js $GIT_PARAMS"
+    }
+}
+```
 
 ## You use another package
 
