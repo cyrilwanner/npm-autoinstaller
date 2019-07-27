@@ -38,6 +38,6 @@
   "dependencies": {
     "colors": "^1.1.2",
     "deepmerge": "^2.1.0",
-    "readline-sync": "^1.4.7"
+    "readline-sync": "^1.4.10"
   }
 }
