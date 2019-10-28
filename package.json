@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "colors": "^1.1.2",
-    "deepmerge": "^2.1.0",
+    "deepmerge": "^4.2.2",
     "readline-sync": "^1.4.7"
   }
 }
